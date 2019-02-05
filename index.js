@@ -43,9 +43,11 @@ async function mainMenu() {
 
         switch (answer.mainMenu) {
             case "products":
+                console.log(answer.mainMenu);
                 getProducts();
                 break;
             case "departments":
+                console.log(answer.mainMenu);
                 getDepartments();
                 break;
             case "QUIT":

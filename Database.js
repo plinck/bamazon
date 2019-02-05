@@ -42,10 +42,10 @@ class Database {
 
 module.exports = Database;
 
-// Test harness
-let database = new Database();
-database.query("SELECT * FROM products", "", (rows) => {
-  console.log(rows);
-});
+// // Test harness
+// let database = new Database();
+// database.query("SELECT * FROM products", "", (rows) => {
+//   console.log(rows);
+// });
 
-database.disconnect();
+// database.disconnect();
