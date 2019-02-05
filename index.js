@@ -2,64 +2,60 @@
 
 const inquirer = require('inquirer');
 const async = require('async');
+const Database = require("./DatabasePromise.js");
 
-async function postItem() {
+// Test harness
+function getProducts() {
+    let database = new Database();
+
+    database.query("SELECT * FROM products")
+        .then(rows => {
+            console.log(rows);
+            // do something with the result
+        })
+        .catch(err => {});
+    database.close();
+}
+
+function getDepartments() {
+    let database = new Database();
+
+    database.query("SELECT * FROM departments")
+        .then(rows => {
+            console.log(rows);
+        })
+        .catch(err => {});
+
+    database.close();
+}
+
+async function mainMenu() {
     const question = {
         type: 'list',
         name: 'mainMenu',
-        message: 'Would you like to post or bid?',
-        choices: ["BID", "POST", "QUIT"]
+        message: 'What would you like to view?',
+        choices: ["departments", "products", "QUIT"]
     };
+
     let done = false;
     while (!done) {
         let answer = await inquirer.prompt(question);
 
         switch (answer.mainMenu) {
-            case "BID":
-                console.log(answer.mainMenu);
+            case "products":
+                getProducts();
                 break;
-            case "POST":
-                console.log(answer.mainMenu);
+            case "departments":
+                getDepartments();
                 break;
             case "QUIT":
                 console.log(answer.mainMenu);
                 done = true;
-                break;
-            default:
-                console.log(answer.mainMenu);
                 break;
         }
     }
 }
 
 //
-async function mainMenu() {
-    const question = {
-        type: 'list',
-        name: 'mainMenu',
-        message: 'Would you like to post or bid?',
-        choices: ["BID", "POST", "QUIT"]
-    };
-    let done = false;
-    while (!done) {
-        let answer = await inquirer.prompt(question);
-
-        switch (answer.mainMenu) {
-            case "BID":
-                console.log(answer.mainMenu);
-                break;
-            case "POST":
-                console.log(answer.mainMenu);
-                break;
-            case "QUIT":
-                console.log(answer.mainMenu);
-                done = true;
-                break;
-            default:
-                console.log(answer.mainMenu);
-                break;
-        }
-    }
-}
 
 mainMenu();
