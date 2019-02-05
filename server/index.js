@@ -2,33 +2,9 @@
 
 const inquirer = require('inquirer');
 const async = require('async');
-const Database = require("./DatabasePromise.js");
+const BAmazonModel = require("./BAmazonModel.js");
 
-// Test harness
-function getProducts() {
-    let database = new Database();
-
-    database.query("SELECT * FROM products")
-        .then(rows => {
-            console.log(rows);
-            // do something with the result
-        })
-        .catch(err => {});
-    database.close();
-}
-
-function getDepartments() {
-    let database = new Database();
-
-    database.query("SELECT * FROM departments")
-        .then(rows => {
-            console.log(rows);
-        })
-        .catch(err => {});
-
-    database.close();
-}
-
+// Main menu
 async function mainMenu() {
     const question = {
         type: 'list',
@@ -37,6 +13,8 @@ async function mainMenu() {
         choices: ["departments", "products", "QUIT"]
     };
 
+    let bAmazonModel = new BAmazonModel();
+
     let done = false;
     while (!done) {
         let answer = await inquirer.prompt(question);
@@ -44,11 +22,11 @@ async function mainMenu() {
         switch (answer.mainMenu) {
             case "products":
                 console.log(answer.mainMenu);
-                getProducts();
+                bAmazonModel.getProductsByDepartment();
                 break;
             case "departments":
                 console.log(answer.mainMenu);
-                getDepartments();
+                bAmazonModel.getDepartments();
                 break;
             case "QUIT":
                 console.log(answer.mainMenu);
