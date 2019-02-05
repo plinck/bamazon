@@ -44,18 +44,18 @@ This is an Amazon-like storefront Command Line Interface app (CLI). The app take
   );
   ```
 
-4. The node application (`bamazonCustomer`) first displays all of the items available for sale.
+4. First, the app displays all of the items available for sale complete price, stock, id and name
 
 5. It then prompts the user with two messages.
-   - The first should ask them the ID of the product they would like to buy.
-   - The second message should ask how many units of the product they would like to buy.
+   - The first asks for the ID of the product they would like to buy.
+   - The second message asks how many units of the product they would like to buy.
 
-6. Once the customer has placed the order, it checks if your store has enough of the product to meet the customer's request.
-   - If not, the app logs `Insufficient quantity!`, and then prevent the order from going through.
+6. Once they have placed the order, it checks if the store has enough of the product to meet the request.
+   - If not, the app logs a message indicated not enough stock, and then prevent the order from going through.
 
-7. However, if your store _does_ have enough of the product, you should fulfill the customer's order.
-   - This means updating the SQL database to reflect the remaining quantity.
-   - Once the update goes through, show the customer the total cost of their purchase.
+7. However, if the store _does_ have enough of the product, the app fulfills the order.
+   - It updares database to reflect the remaining quantity (stock qty - purchased qty)
+   - After that completes successfully the app shows the customer the total cost of their purchase and how many are left in stock.
 
 - - -
 
