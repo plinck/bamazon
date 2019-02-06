@@ -42,6 +42,7 @@ async function buyProduct(product_id, quantity) {
     });
 }
 
+// customer menu
 async function customerMenu() {
     let bAmazonModel = new BAmazonModel();
 
@@ -66,6 +67,40 @@ async function customerMenu() {
     buyProduct(product_id, quantity);
 }
 
+// manager menu
+async function managerMenu() {
+    const question = {
+        type: 'list',
+        name: 'managerMenu',
+        message: '\n\nWhat do you want to do?',
+        choices: ["View Products", "View Low Inventory", "Add to Inventory", "Add New Product"]
+    };
+
+    let answer = await inquirer.prompt(question);
+
+    switch (answer.managerMenu) {
+        case "View Products":
+            console.log(answer.managerMenu);
+            break;
+        case "View Low Inventory":
+            console.log(answer.managerMenu);
+            break;
+        case "Add to Inventory":
+            console.log(answer.managerMenu);
+            let addInvAnswer = await inquirer.prompt([{name: 'product_id', message: 'Product ID?'}, {name: 'qty', message: 'How Many?'}]);
+            console.log(addInvAnswer.product_id, addInvAnswer.qty);
+            break;
+        case "Add New Product":
+            console.log(answer.managerMenu);
+            let addAnswer = await inquirer.prompt([{name: 'product_name', message: 'Product Name?'},
+             {name: 'qty', message: 'How Many?'}, {name: 'price', message: 'Price?'}, {name: 'dept', message: 'dept?'}]);
+            //console.log(addAnswer.product_name, addAnswer.qty);
+            break;
+        default:
+            break;
+    }
+}
+
 // Main menu
 async function mainMenu() {
     const question = {
@@ -86,6 +121,7 @@ async function mainMenu() {
             break;
         case "manager":
             console.log(answer.mainMenu);
+            managerMenu();
             break;
         case "supervisor":
             console.log(answer.mainMenu);
