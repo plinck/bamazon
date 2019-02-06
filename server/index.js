@@ -16,6 +16,18 @@ function renderProducts(rows) {
 
 }
 
+function renderDepartments(rows) {
+    console.log(`\n----------------------------------------------------------------------\n`);
+    console.log(`DEPARTMENTS`);
+    for (let i in rows) {
+        //console.log(row);
+        let row = rows[i];
+        console.log(row.department_id, row.department_name, row.overhead_costs);
+    }
+    console.log(`\n----------------------------------------------------------------------\n`);
+}
+
+
 // Buy the product
 async function buyProduct(product_id, quantity) {
     let bAmazonModel = new BAmazonModel();
@@ -40,6 +52,35 @@ async function buyProduct(product_id, quantity) {
     }).catch(err => {
         console.log(`Error finding product with id: ${product_id}`);
     });
+}
+
+// View Departments
+async function getDepartments() {
+    let bAmazonModel = new BAmazonModel();
+
+    try {
+        let rows = await bAmazonModel.getDepartments();
+        renderDepartments(rows);
+        let departmentIDarray = [];
+        for (let i in rows) {
+            departmentIDarray.push(`${rows[i].department_id}`);
+        }
+        return departmentIDarray;
+    } catch (err) {
+        console.error(`Error trying to insert ${err}`);
+    }
+}
+
+// Add Product
+async function addProduct(department_id, product_name, price, stock_quantity) {
+    let bAmazonModel = new BAmazonModel();
+
+    try {
+        let res = await bAmazonModel.addProduct(department_id, product_name, price, stock_quantity);
+        console.log(res);
+    } catch (err) {
+        console.error(`Error trying to INSERT ${err}`);
+    }
 }
 
 // customer menu
@@ -87,14 +128,37 @@ async function managerMenu() {
             break;
         case "Add to Inventory":
             console.log(answer.managerMenu);
-            let addInvAnswer = await inquirer.prompt([{name: 'product_id', message: 'Product ID?'}, {name: 'qty', message: 'How Many?'}]);
+            let addInvAnswer = await inquirer.prompt([{
+                name: 'product_id',
+                message: 'Product ID?'
+            }, {
+                name: 'qty',
+                message: 'How Many?'
+            }]);
             console.log(addInvAnswer.product_id, addInvAnswer.qty);
             break;
         case "Add New Product":
-            console.log(answer.managerMenu);
-            let addAnswer = await inquirer.prompt([{name: 'product_name', message: 'Product Name?'},
-             {name: 'qty', message: 'How Many?'}, {name: 'price', message: 'Price?'}, {name: 'dept', message: 'dept?'}]);
-            //console.log(addAnswer.product_name, addAnswer.qty);
+            // need to force them to enter department that exists for referential integrity
+            let departments = await getDepartments();
+            let addAnswer = await inquirer.prompt([{
+                    name: 'product_name',
+                    message: 'Product Name?'
+                },
+                {
+                    name: 'stock_quantity',
+                    message: 'How Many?'
+                }, {
+                    name: 'price',
+                    message: 'Price?'
+                }, {
+                    type: 'list',
+                    name: 'department_id',
+                    message: 'Department ID?',
+                    choices: departments
+                }
+            ]);
+            let department_id = parseInt(addAnswer.department_id);
+            await addProduct(department_id, addAnswer.product_name, addAnswer.price, addAnswer.stock_quantity);
             break;
         default:
             break;
