@@ -69,8 +69,8 @@ async function mainMenu() {
     const question = {
         type: 'list',
         name: 'mainMenu',
-        message: '\n\nWhat would you like to view?',
-        choices: ["departments", "products", "QUIT"]
+        message: '\n\nWhat view do you want?',
+        choices: ["customer", "manager", "supervisor", "QUIT"]
     };
 
     let bAmazonModel = new BAmazonModel();
@@ -80,15 +80,17 @@ async function mainMenu() {
         let answer = await inquirer.prompt(question);
 
         switch (answer.mainMenu) {
-            case "products":
+            case "customer":
                 console.log(answer.mainMenu);
-                bAmazonModel.getProductsByDepartment().then(rows => {
-                    renderProducts(rows);
+                customerMenu(() => {
+                    console.log("done");
                 });
                 break;
-            case "departments":
+            case "manager":
                 console.log(answer.mainMenu);
-                bAmazonModel.getDepartments();
+                break;
+            case "supervisor":
+                console.log(answer.mainMenu);
                 break;
             case "QUIT":
                 console.log(answer.mainMenu);
@@ -99,5 +101,4 @@ async function mainMenu() {
 }
 
 //
-
-customerMenu();
+mainMenu();

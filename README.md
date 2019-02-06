@@ -12,6 +12,7 @@ This is an Amazon-like storefront Command Line Interface app (CLI). The app take
 - [x] Inquire
 
 ## Screenshots
+![ERD/EER](server/images/ERD.png)
 
 ## Design
 
