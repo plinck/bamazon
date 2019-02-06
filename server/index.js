@@ -16,6 +16,32 @@ function renderProducts(rows) {
 
 }
 
+// Buy the product
+async function buyProduct(product_id, quantity) {
+    let bAmazonModel = new BAmazonModel();
+
+    bAmazonModel.getProductByID(product_id).then(rows => {
+        if (rows[0].stock_quantity >= quantity) {
+            let totalSale = quantity * rows[0].price;
+            let newQuantity = rows[0].stock_quantity - quantity;
+
+            bAmazonModel.reduceProductQuantity(product_id, newQuantity)
+                .then(() => {
+                    totalSale = totalSale.toFixed(2);
+                    console.log(`You bought ${quantity} x ${rows[0].product_name} totalling: $${totalSale}`);
+                    console.log(`There are now ${newQuantity} x ${rows[0].product_name} left`);
+                })
+                .catch(err => {
+                    console.log(`Error updating stock quantity ${err}.  Sale Rejected`);
+                });
+        } else {
+            console.log(`Stock is ${rows[0].stock_quantity} of ${rows[0].product_name}.  Cant sell you: ${quantity}`);
+        }
+    }).catch(err => {
+        console.log(`Error finding product with id: ${product_id}`);
+    });
+}
+
 async function customerMenu() {
     let bAmazonModel = new BAmazonModel();
 
@@ -33,35 +59,11 @@ async function customerMenu() {
         }
     ];
 
-    let done = false;
-    while (!done) {
-        let answer = await inquirer.prompt(question);
-        let product_id = parseInt(answer.product_id);
-        let quantity = parseInt(answer.quantity);
+    let answer = await inquirer.prompt(question);
+    let product_id = parseInt(answer.product_id);
+    let quantity = parseInt(answer.quantity);
 
-        bAmazonModel.getProductByID(product_id).then(rows => {
-            if (rows[0].stock_quantity >= quantity) {
-                let totalSale = quantity * rows[0].price;
-                let newQuantity = rows[0].stock_quantity - quantity;
-
-                bAmazonModel.reduceProductQuantity(product_id, newQuantity)
-                    .then(() => {
-                        totalSale = totalSale.toFixed(2);
-                        console.log(`You bought ${quantity} x ${rows[0].product_name} totalling: $${totalSale}`);
-                        console.log(`There are now ${newQuantity} x ${rows[0].product_name} left`);
-                    })
-                    .catch(err => {
-                        console.log(`Error updating stock quantity ${err}.  Sale Rejected`);
-                    });
-            } else {
-                console.log(`Stock is ${rows[0].stock_quantity} of ${rows[0].product_name}.  Cant sell you: ${quantity}`);
-            }
-        }).catch(err => {
-            console.log(`Error finding product with id: ${product_id}`);
-        });
-
-        done = true;
-    }
+    buyProduct(product_id, quantity);
 }
 
 // Main menu
@@ -75,28 +77,23 @@ async function mainMenu() {
 
     let bAmazonModel = new BAmazonModel();
 
-    let done = false;
-    while (!done) {
-        let answer = await inquirer.prompt(question);
+    let answer = await inquirer.prompt(question);
 
-        switch (answer.mainMenu) {
-            case "customer":
-                console.log(answer.mainMenu);
-                customerMenu(() => {
-                    console.log("done");
-                });
-                break;
-            case "manager":
-                console.log(answer.mainMenu);
-                break;
-            case "supervisor":
-                console.log(answer.mainMenu);
-                break;
-            case "QUIT":
-                console.log(answer.mainMenu);
-                done = true;
-                break;
-        }
+    switch (answer.mainMenu) {
+        case "customer":
+            console.log(answer.mainMenu);
+            customerMenu();
+            break;
+        case "manager":
+            console.log(answer.mainMenu);
+            break;
+        case "supervisor":
+            console.log(answer.mainMenu);
+            break;
+        case "QUIT":
+            console.log(answer.mainMenu);
+            done = true;
+            break;
     }
 }
 
