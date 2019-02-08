@@ -6,15 +6,43 @@ const BAmazonModel = require("./BAmazonModel.js");
 
 // Render Products to the console
 function renderProducts(rows) {
-    console.log(`\n----------------------------------------------------------------------\n`);
+    let headers = ["product_id", "product_name", "department_name", "price", "stock_quantity", "product_sales"];
+    const columnWidths = [];
+
+    for (let i in headers) {
+        let h = headers[i];
+        columnWidths[i] = h.length;
+    }
+
+    // Increase header width if value is wider
+    rows.forEach(row => {
+        let i = 0;
+        for (let key in row) {
+            let str = row[key].toString();
+            columnWidths[i] = Math.max(columnWidths[i], str.length);
+            i++;
+        }
+    });
+
+    // display the header
+    let headerText = "";
+    for (let i in headers) {
+        headerText += headers[i] + " ".repeat(columnWidths[i] - headers[i].length + 2);
+    }
+    console.log(headerText.toUpperCase());
 
     for (let i in rows) {
         //console.log(row);
         let row = rows[i];
-        console.log(row.product_id, row.product_name, row.department_name, row.price, row.stock_quantity, row.product_sales);
+        let rowText = "";
+        let j = 0;
+        for (let key in row) {
+            let str = row[key].toString();
+            rowText += row[key] + " ".repeat(columnWidths[j] - str.length + 2);
+            j++;
+        }
+        console.log(rowText);
     }
-    console.log(`\n----------------------------------------------------------------------\n`);
-
 }
 
 // Render Departments to the console
@@ -135,7 +163,7 @@ function addNewProduct(departments) {
         let department_id = parseInt(answer.department_id);
 
         let bAmazonModel = new BAmazonModel();
-        bAmazonModel.addProduct(department_id, answer.product_name, answer.price, answer.stock_quantity).then( () => {
+        bAmazonModel.addProduct(department_id, answer.product_name, answer.price, answer.stock_quantity).then(() => {
             console.log(`Added Stock to ${answer.product_name}`);
             if (answer.more != undefined && answer.more == 'y') addNewProduct(departments);
         }).catch(errc => {
