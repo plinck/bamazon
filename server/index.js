@@ -5,6 +5,7 @@ const async = require('async');
 const BAmazonModel = require("./BAmazonModel.js");
 
 // Render Products to the console
+// To make the header and data line up, I find maximum val for each column and make them all that size
 function renderProducts(rows) {
     let headers = ["product_id", "product_name", "department_name", "price", "stock_quantity", "product_sales"];
     const columnWidths = [];
@@ -25,20 +26,27 @@ function renderProducts(rows) {
     });
 
     // display the header
-    let headerText = "";
+    let headerText = "|";
     for (let i in headers) {
-        headerText += headers[i] + " ".repeat(columnWidths[i] - headers[i].length + 2);
+        headerText += " " + headers[i] + " ".repeat(columnWidths[i] - headers[i].length) + " |";
+    }
+    console.log();
+    console.log(headerText.toUpperCase());
+
+    headerText = "|";
+    for (let i in headers) {
+        headerText += " " + "-".repeat(headers[i].length) + "-".repeat(columnWidths[i] - headers[i].length) + " |";
     }
     console.log(headerText.toUpperCase());
 
     for (let i in rows) {
         //console.log(row);
         let row = rows[i];
-        let rowText = "";
+        let rowText = "|";
         let j = 0;
         for (let key in row) {
             let str = row[key].toString();
-            rowText += row[key] + " ".repeat(columnWidths[j] - str.length + 2);
+            rowText += " " + row[key] + " ".repeat(columnWidths[j] - str.length) + " |";
             j++;
         }
         console.log(rowText);
