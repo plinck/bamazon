@@ -30,25 +30,29 @@ function renderDepartments(rows) {
 }
 
 // Customer : Buy the product
-async function buyProduct(product_id, quantity) {
+function buyProduct(product_id, quantity, completedWorkCallback) {
     let bAmazonModel = new BAmazonModel();
+    let totalSale;
+    let newQuantity;
 
     bAmazonModel.getProductByID(product_id).then(rows => {
         if (rows[0].stock_quantity >= quantity) {
-            let totalSale = quantity * rows[0].price;
-            let newQuantity = rows[0].stock_quantity - quantity;
+            totalSale = quantity * rows[0].price;
+            newQuantity = rows[0].stock_quantity - quantity;
 
             bAmazonModel.reduceProductQuantity(product_id, newQuantity)
                 .then(() => {
                     totalSale = totalSale.toFixed(2);
                     console.log(`You bought ${quantity} x ${rows[0].product_name} totalling: $${totalSale}`);
                     console.log(`There are now ${newQuantity} x ${rows[0].product_name} left`);
+                    completedWorkCallback();
                 })
                 .catch(err => {
                     console.log(`Error updating stock quantity ${err}.  Sale Rejected`);
                 });
         } else {
             console.log(`Stock is ${rows[0].stock_quantity} of ${rows[0].product_name}.  Cant sell you: ${quantity}`);
+            completedWorkCallback();
         }
     }).catch(err => {
         console.log(`Error finding product with id: ${product_id}`);
@@ -87,6 +91,10 @@ async function customerMenu() {
         {
             name: 'quantity',
             message: '\nHow Many would you like to buy?'
+        },
+        {
+            name: 'more',
+            message: 'Add More (y=yes)?'
         }
     ];
 
@@ -94,7 +102,9 @@ async function customerMenu() {
     let product_id = parseInt(answer.product_id);
     let quantity = parseInt(answer.quantity);
 
-    buyProduct(product_id, quantity);
+    buyProduct(product_id, quantity, () => {
+        if (answer.more != undefined && answer.more == 'y') customerMenu();
+    });
 }
 
 // Manager : add new product
@@ -116,7 +126,7 @@ function addNewProduct(departments) {
             choices: departments
         },
         {
-            name: 'done',
+            name: 'more',
             message: 'Add More (y=yes)?'
         }
     ];
@@ -127,10 +137,10 @@ function addNewProduct(departments) {
         let bAmazonModel = new BAmazonModel();
         bAmazonModel.addProduct(department_id, answer.product_name, answer.price, answer.stock_quantity).then( () => {
             console.log(`Added Stock to ${answer.product_name}`);
-            if (answer.done != undefined && answer.done == 'y') addNewProduct(departments);
+            if (answer.more != undefined && answer.more == 'y') addNewProduct(departments);
         }).catch(errc => {
             console.log(`Error adding product: ${err}`);
-            if (answer.done != undefined && answer.done == 'y') addNewProduct(departments);
+            if (answer.more != undefined && answer.more == 'y') addNewProduct(departments);
         });
     });
 }
@@ -209,7 +219,6 @@ async function mainMenu() {
             break;
         case "QUIT":
             console.log(answer.mainMenu);
-            done = true;
             break;
     }
 }
