@@ -4,9 +4,11 @@ const inquirer = require('inquirer');
 const async = require('async');
 const BAmazonModel = require("./BAmazonModel.js");
 
-// Render Products to the console
+// Render data/rows to the console
+// Made in generic so any set of rows can be neatly displayed.
+// Pretty nice since I can use this one fucntion for ALL display data coming from ANY table
 // To make the header and data line up, I find maximum val for each column and make them all that size
-function renderProducts(rows) {
+function renderData(rows) {
     const columnWidths = {};
 
     // first, get header (keys) length and set as default
@@ -50,18 +52,6 @@ function renderProducts(rows) {
     });
 }
 
-// Render Departments to the console
-function renderDepartments(rows) {
-    console.log(`\n----------------------------------------------------------------------\n`);
-    console.log(`DEPARTMENTS`);
-    for (let i in rows) {
-        //console.log(row);
-        let row = rows[i];
-        console.log(row.department_id, row.department_name, row.overhead_costs);
-    }
-    console.log(`\n----------------------------------------------------------------------\n`);
-}
-
 // Customer : Buy the product
 function buyProduct(product_id, quantity, completedWorkCallback) {
     let bAmazonModel = new BAmazonModel();
@@ -98,7 +88,7 @@ async function getDepartments() {
 
     try {
         let rows = await bAmazonModel.getDepartments();
-        renderDepartments(rows);
+        renderData(rows);
         let departmentIDarray = [];
         for (let i in rows) {
             departmentIDarray.push(`${rows[i].department_id}`);
@@ -115,7 +105,7 @@ async function customerMenu() {
 
     // use await since you cant ask them the question without showing them choices
     let rows = await bAmazonModel.getProductsByDepartment();
-    renderProducts(rows);
+    renderData(rows);
 
     const question = [{
             name: 'product_id',
