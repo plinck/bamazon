@@ -4,6 +4,7 @@ const inquirer = require('inquirer');
 const async = require('async');
 const BAmazonModel = require("./BAmazonModel.js");
 
+// Render Products to the console
 function renderProducts(rows) {
     console.log(`\n----------------------------------------------------------------------\n`);
 
@@ -16,6 +17,7 @@ function renderProducts(rows) {
 
 }
 
+// Render Departments to the console
 function renderDepartments(rows) {
     console.log(`\n----------------------------------------------------------------------\n`);
     console.log(`DEPARTMENTS`);
@@ -27,8 +29,7 @@ function renderDepartments(rows) {
     console.log(`\n----------------------------------------------------------------------\n`);
 }
 
-
-// Buy the product
+// Customer : Buy the product
 async function buyProduct(product_id, quantity) {
     let bAmazonModel = new BAmazonModel();
 
@@ -71,19 +72,7 @@ async function getDepartments() {
     }
 }
 
-// Add Product
-async function addProduct(department_id, product_name, price, stock_quantity) {
-    let bAmazonModel = new BAmazonModel();
-
-    try {
-        let res = await bAmazonModel.addProduct(department_id, product_name, price, stock_quantity);
-        console.log(res);
-    } catch (err) {
-        console.error(`Error trying to INSERT ${err}`);
-    }
-}
-
-// customer menu
+// Customer menu
 async function customerMenu() {
     let bAmazonModel = new BAmazonModel();
 
@@ -108,7 +97,60 @@ async function customerMenu() {
     buyProduct(product_id, quantity);
 }
 
-// manager menu
+// Manager : add new product
+function addNewProduct(departments) {
+    let promptInfo = [{
+            name: 'product_name',
+            message: 'Product Name?'
+        },
+        {
+            name: 'stock_quantity',
+            message: 'How Many?'
+        }, {
+            name: 'price',
+            message: 'Price?'
+        }, {
+            type: 'list',
+            name: 'department_id',
+            message: 'Department ID?',
+            choices: departments
+        },
+        {
+            name: 'done',
+            message: 'Add More (y=yes)?'
+        }
+    ];
+
+    inquirer.prompt(promptInfo).then(answer => {
+        let department_id = parseInt(answer.department_id);
+
+        let bAmazonModel = new BAmazonModel();
+        bAmazonModel.addProduct(department_id, answer.product_name, answer.price, answer.stock_quantity).then( () => {
+            console.log(`Added Stock to ${answer.product_name}`);
+            if (answer.done != undefined && answer.done == 'y') addNewProduct(departments);
+        }).catch(errc => {
+            console.log(`Error adding product: ${err}`);
+            if (answer.done != undefined && answer.done == 'y') addNewProduct(departments);
+        });
+    });
+}
+
+// Manager : add to inventory
+function addToInventory() {
+    let promptInfo = [{
+        name: 'product_id',
+        message: 'Product ID?'
+    }, {
+        name: 'qty',
+        message: 'How Many?'
+    }];
+
+    inquirer.prompt(promptInfo).then(answer => {
+        console.log(answer.product_id, answer.qty);
+    });
+}
+
+// Manager menu
 async function managerMenu() {
     const question = {
         type: 'list',
@@ -128,37 +170,12 @@ async function managerMenu() {
             break;
         case "Add to Inventory":
             console.log(answer.managerMenu);
-            let addInvAnswer = await inquirer.prompt([{
-                name: 'product_id',
-                message: 'Product ID?'
-            }, {
-                name: 'qty',
-                message: 'How Many?'
-            }]);
-            console.log(addInvAnswer.product_id, addInvAnswer.qty);
+            addToInventory();
             break;
         case "Add New Product":
-            // need to force them to enter department that exists for referential integrity
+            // get the departments to maintain ref integrity when adding product
             let departments = await getDepartments();
-            let addAnswer = await inquirer.prompt([{
-                    name: 'product_name',
-                    message: 'Product Name?'
-                },
-                {
-                    name: 'stock_quantity',
-                    message: 'How Many?'
-                }, {
-                    name: 'price',
-                    message: 'Price?'
-                }, {
-                    type: 'list',
-                    name: 'department_id',
-                    message: 'Department ID?',
-                    choices: departments
-                }
-            ]);
-            let department_id = parseInt(addAnswer.department_id);
-            await addProduct(department_id, addAnswer.product_name, addAnswer.price, addAnswer.stock_quantity);
+            addNewProduct(departments);
             break;
         default:
             break;

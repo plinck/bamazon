@@ -10,11 +10,16 @@ This is an Amazon-like storefront Command Line Interface app (CLI). The app take
 - [x] mySQL (JawsDB on heroku)
 - [x] Node.js
 - [x] Inquire
+- [x] Promises
 
 ## Screenshots
 ![ERD/EER](server/images/ERD.png)
 
 ## Design
+
+### Notes
+
+- I used promises in a several ways to demonstrate the differences -- async/await, try/catch and standard (.then, .catch).  I am not convinved on what the **best** way is in each sitaution but working on it.
 
 ### Part #1: Customer View
 
@@ -143,3 +148,4 @@ Make sure you use the normal GitHub. Because this is a CLI App, there will be no
 ## To Do
 
 - Create icon and add to portfolio
+- Move database connection to model ctor and destory and proper time
