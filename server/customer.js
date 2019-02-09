@@ -42,14 +42,17 @@ async function customerMenu() {
     // use await since you cant ask them the question without showing them choices
     let rows = await bAmazonModel.getProductsByDepartment();
     render(rows);
+    const productIDs = rows.map(r => r.product_id);
 
     const question = [{
             name: 'product_id',
-            message: '\nWhat product you like to buy?'
+            message: '\nWhat product you like to buy?',
+            validate: value => (value !== "" && !isNaN(value) && productIDs.includes(parseFloat(value)))
         },
         {
             name: 'quantity',
-            message: '\nHow Many would you like to buy?'
+            message: '\nHow Many would you like to buy?',
+            validate: value => (value !== "" && !isNaN(value) )
         },
         {
             name: 'more',
@@ -59,7 +62,7 @@ async function customerMenu() {
 
     let answer = await inquirer.prompt(question);
     let product_id = parseInt(answer.product_id);
-    let quantity = parseInt(answer.quantity);
+    let quantity = Math.trunc(parseFloat(answer.quantity));
 
     // use completion handler to come back when done and see if needing to go again
     // If the user wants to do it again, allow it

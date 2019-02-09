@@ -5,33 +5,30 @@ const async = require('async');
 const customer = require("./customer.js");
 const manager = require("./manager.js");
 
+function exitProgram() {
+    console.log("BYE!");
+}
+
 // Main menu
 async function mainMenu() {
+    const menuItems = {
+        "customer": customer.customerMenu,
+        "manager": manager.managerMenu,
+        "supervisor": exitProgram,
+        "QUIT": exitProgram
+    };
+
     const question = {
         type: 'list',
         name: 'mainMenu',
         message: '\n\nWhat view do you want?',
-        choices: ["customer", "manager", "supervisor", "QUIT"]
+        choices: Object.keys(menuItems)
     };
 
-    let answer = await inquirer.prompt(question);
+    inquirer.prompt(question).then(answer => {
+        menuItems[answer.mainMenu]();
+    });
 
-    switch (answer.mainMenu) {
-        case "customer":
-            console.log(answer.mainMenu);
-            customer.customerMenu();
-            break;
-        case "manager":
-            console.log(answer.mainMenu);
-            manager.managerMenu();
-            break;
-        case "supervisor":
-            console.log(answer.mainMenu);
-            break;
-        case "QUIT":
-            console.log(answer.mainMenu);
-            break;
-    }
 }
 
 //
