@@ -104,7 +104,7 @@ async function managerMenu() {
             render(rows);
             break;
         case "View Low Inventory":
-            rows = await bAmazonModel.getProductsBelowQuantity(50);
+            rows = await bAmazonModel.getProductsBelowQuantity(5);
             render(rows);
             break;
         case "Update Product Inventory":

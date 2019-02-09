@@ -2,7 +2,7 @@
 
 ## Overview
 
-This is an Amazon-like storefront Command Line Interface app (CLI). The app takes in orders from customers and depletes stock from the store's inventory. As a bonus, it tracks product sales across the store's departments and then provides a summary of the highest-grossing departments in the store.
+This is an Amazon-like storefront Command Line Interface app (CLI). The app takes in orders from customers and depletes stock from the store's inventory. It tracks product sales across the store's departments and then provides a summary of the highest-grossing departments in the store.
 
 ## Instructions
 
@@ -20,20 +20,24 @@ This is an Amazon-like storefront Command Line Interface app (CLI). The app take
 - [x] Node.js, inquirer, async, dotenv, mysql
 
 ## Screenshots
-![ERD/EER](server/images/ERD.png)
+![Logo](server/images/bamazon275x200.png)
 
 ## Design
 ![ERD/EER](server/images/ERD.png)
 
 ### Notes
 
-- I used promises in a several ways to demonstrate the differences -- async/await, try/catch and standard (.then, .catch).  I am not convinved on what the **best** way is in each sitaution but working on it.
+- I used promises in a several ways to demonstrate the differences -- async/await, try/catch and standard (.then, .catch). In addition I used standard callbacks.  I wanted to show all the different ways these things could be done.
 
-### Part #1: Customer View
+### Main Menu
+
+Main menu just displays customer, manager or supervisor to choose your roles.  Alternatively, you can run `customer.js`, `manager.js` or `supervisor.js` directly using node on command prompt.
+
+### Customer View (Pick `customer` from main menu or run `node customer` from command prompt)
 
 1. Create a MySQL Database called `bamazon`.
 
-2. `products` table (with 10 product examples)
+2. `products` table
 
   ```sql
    CREATE TABLE products (
@@ -77,50 +81,40 @@ This is an Amazon-like storefront Command Line Interface app (CLI). The app take
 
 * The logic is in `manager.js` but it is called from mainMenu is index.js (or you can run directly wihtout going through the menu). Running as manager allows:
 
-    * View Products for Sale
+* `View Products for Sale` lists every available item: the item IDs, names, prices, department and quantities.
 
-    * View Low Inventory
+* `View Low Inventory` lists all items with an inventory count lower than **5**.
 
-    * Update Inventory
+* `Update Inventory` displays products and then a prompt that lets the manager update the quanity of any item currently in the store.  You can make it higher or lower in case it was spoiled or something and to make testing easier.   So it does not force you to just add to the inventory, you can make it whatever you want.
 
-    * Add New Product
-
-* If a manager selects `View Products for Sale`, the app should list every available item: the item IDs, names, prices, and quantities.
-
-* If a manager selects `View Low Inventory`, then it should list all items with an inventory count lower than five.
-
-* If a manager selects `Update Inventory`, it displays a prompt that will let the manager update the quanity of any item currently in the store.  You can make it higher or lower in case it was spoiled or something.   So it does not force you to just add to the inventory, you can make it whatever you want.
-
-* If a manager selects `Add New Product`, it should allow the manager to add a completely new product to the store.
+* `Add New Product` allows the manager to add a new product to the store.
 
 - - -
 
-### Challenge #3: Supervisor View (Final Level)
+### Supervisor View (Pick `supervisor` from main menu or run `node supervisor` from command prompt)
 
-1. Create a new MySQL table called `departments`. Your table should include the following columns:
+1. `departments` table.
+  ```sql
+  CREATE TABLE departments (
+    department_id   INT AUTO_INCREMENT NOT NULL,
+    department_name VARCHAR(30) NOT NULL,
+    overhead_costs  DECIMAL(8, 2) NOT NULL,
+    PRIMARY KEY (department_id)
+  );
+  ```
 
-   * department_id
-
-   * department_name
-
-   * over_head_costs (A dummy number you set for each department)
-
-2. Modify the products table so that there's a product_sales column, and modify your `customer.js` app so that when a customer purchases anything from the store, the price of the product multiplied by the quantity purchased is added to the product's product_sales column.
+2. When a customer purchases anything from the store, the price of the product multiplied by the quantity purchased is added to the product's product_sales column.
 
 3. The logic is in `supervisor.js` but is called from the mainMenu in index.js (or you can run directly without going through the mainMenu):
 
-   * View Product Sales by Department
-
-   * Create New Department
-
-4. When a supervisor selects `View Product Sales by Department`, the app should display a summarized table in their terminal/bash window. Use the table below as a guide.
+4. `View Product Sales by Department` displays a summarized table in their terminal/bash window. Use the table below as a guide.
 
 | department_id | department_name | over_head_costs | product_sales | total_profit |
 | ------------- | --------------- | --------------- | ------------- | ------------ |
 | 01            | Electronics     | 10000           | 20000         | 10000        |
 | 02            | Clothing        | 60000           | 100000        | 40000        |
 
-5. The `total_profit` column should be calculated on the fly using the difference between `over_head_costs` and `product_sales`. `total_profit` should not be stored in any database. You should use a custom alias.
+5. The `total_profit` column is calculated on the fly using the difference between `over_head_costs` and `product_sales`. `total_profit` is not be stored in any database. Use a custom alias.
 
 6. If you can't get the table to display properly after a few hours, then feel free to go back and just add `total_profit` to the `departments` table.
 
