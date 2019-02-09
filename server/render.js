@@ -1,4 +1,4 @@
-// Render data/rows to the console
+// Render data/rows to the console in a pretty fashion
 // Made in generic so any set of rows can be neatly displayed.
 // Pretty nice since I can use this one fucntion for ALL display data coming from ANY table
 // To make the header and data line up, I find maximum val for each column and make them all that size

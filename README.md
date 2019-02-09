@@ -4,18 +4,26 @@
 
 This is an Amazon-like storefront Command Line Interface app (CLI). The app takes in orders from customers and depletes stock from the store's inventory. As a bonus, it tracks product sales across the store's departments and then provides a summary of the highest-grossing departments in the store.
 
+## Instructions
+
+- You must clone the repo to your machine since it is a console application
+- Then npm install dependencies
+- Create the database using the SQL files --- `server/bamazon_db.sql` and seed data with `server/bamazon_data.sql`
+- Then run `node index` from the `server` directory - all sub menus are called from that for customer, manager and supervisor
+- Create a mySQL database connecton with user id `plinck` and password `password` that has access to DB
+- If you want to use JAWS DB you will need a .env with my Heroku DB URL in it.  I will give it to you if you need it.
+
 ## Technologies Used
 
 - [x] Javascript
-- [x] mySQL (JawsDB on heroku)
-- [x] Node.js
-- [x] Inquire
-- [x] Promises
+- [x] SQL (JawsDB on heroku and Local mySQL DB)
+- [x] Node.js, inquirer, async, dotenv, mysql
 
 ## Screenshots
 ![ERD/EER](server/images/ERD.png)
 
 ## Design
+![ERD/EER](server/images/ERD.png)
 
 ### Notes
 
@@ -65,31 +73,25 @@ This is an Amazon-like storefront Command Line Interface app (CLI). The app take
 
 - - -
 
-### Challenge #2: Manager View (Next Level)
+### Manager View (Pick `manager` from main menu or run `node manager` from command prompt)
 
-* Create a new Node application called `bamazonManager.js`. Running this application will:
-
-  * List a set of menu options:
+* The logic is in `manager.js` but it is called from mainMenu is index.js (or you can run directly wihtout going through the menu). Running as manager allows:
 
     * View Products for Sale
 
     * View Low Inventory
 
-    * Add to Inventory
+    * Update Inventory
 
     * Add New Product
 
-  * If a manager selects `View Products for Sale`, the app should list every available item: the item IDs, names, prices, and quantities.
+* If a manager selects `View Products for Sale`, the app should list every available item: the item IDs, names, prices, and quantities.
 
-  * If a manager selects `View Low Inventory`, then it should list all items with an inventory count lower than five.
+* If a manager selects `View Low Inventory`, then it should list all items with an inventory count lower than five.
 
-  * If a manager selects `Add to Inventory`, your app should display a prompt that will let the manager "add more" of any item currently in the store.
+* If a manager selects `Update Inventory`, it displays a prompt that will let the manager update the quanity of any item currently in the store.  You can make it higher or lower in case it was spoiled or something.   So it does not force you to just add to the inventory, you can make it whatever you want.
 
-  * If a manager selects `Add New Product`, it should allow the manager to add a completely new product to the store.
-
-- - -
-
-* If you finished Challenge #2 and put in all the hours you were willing to spend on this activity, then rest easy! Otherwise continue to the next and final challenge.
+* If a manager selects `Add New Product`, it should allow the manager to add a completely new product to the store.
 
 - - -
 
@@ -103,11 +105,9 @@ This is an Amazon-like storefront Command Line Interface app (CLI). The app take
 
    * over_head_costs (A dummy number you set for each department)
 
-2. Modify the products table so that there's a product_sales column, and modify your `bamazonCustomer.js` app so that when a customer purchases anything from the store, the price of the product multiplied by the quantity purchased is added to the product's product_sales column.
+2. Modify the products table so that there's a product_sales column, and modify your `customer.js` app so that when a customer purchases anything from the store, the price of the product multiplied by the quantity purchased is added to the product's product_sales column.
 
-   * Make sure your app still updates the inventory listed in the `products` column.
-
-3. Create another Node app called `bamazonSupervisor.js`. Running this application will list a set of menu options:
+3. The logic is in `supervisor.js` but is called from the mainMenu in index.js (or you can run directly without going through the mainMenu):
 
    * View Product Sales by Department
 
@@ -131,19 +131,6 @@ This is an Amazon-like storefront Command Line Interface app (CLI). The app take
    * Hint: You may need to look into JOINS.
 
    * **HINT**: There may be an NPM package that can log the table to the console. What's is it? Good question :)
-
-
-## Submission Guide
-
-Make sure you use the normal GitHub. Because this is a CLI App, there will be no need to deploy it to Heroku. This time, though, you need to include screenshots, a gif, and/or a video showing us that you got the app working with no bugs. You can include these screenshots or a link to a video in a `README.md` file.
-
-- Include screenshots (or a video) of typical user flows through your application (for the customer and if relevant the manager/supervisor). This includes views of the prompts and the responses after their selection (for the different selection options).
-
-- Include any other screenshots you deem necessary to help someone who has never been introduced to your application understand the purpose and function of it. This is how you will communicate to potential employers/other developers in the future what you built and why, and to show how it works. 
-
-- Because screenshots (and well-written READMEs) are extremely important in the context of GitHub, this will be part of the grading.
-
-- - -
 
 ## To Do
 
