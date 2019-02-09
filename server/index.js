@@ -2,10 +2,8 @@
 
 const inquirer = require('inquirer');
 const async = require('async');
-const BAmazonModel = require("./BAmazonModel.js");
-let render = require("./render.js");
-let customer = require("./customer.js");
-let manager = require("./manager.js");
+const customer = require("./customer.js");
+const manager = require("./manager.js");
 
 // Main menu
 async function mainMenu() {
@@ -15,8 +13,6 @@ async function mainMenu() {
         message: '\n\nWhat view do you want?',
         choices: ["customer", "manager", "supervisor", "QUIT"]
     };
-
-    let bAmazonModel = new BAmazonModel();
 
     let answer = await inquirer.prompt(question);
 
