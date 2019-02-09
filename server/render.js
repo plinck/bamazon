@@ -7,7 +7,7 @@ function render(rows) {
 
     // first, get header (keys) length and set as default
     // note keys in array of keys so the name is keys[idx]
-    let keys = (rows['0'] != undefined) ? Object.keys(rows['0']) : {};
+    let keys = (rows[0] != undefined) ? Object.keys(rows[0]) : {};
     for (let i in keys) {
         columnWidths[keys[i]] = keys[i].length;
     }
