@@ -1,7 +1,6 @@
 "use strict";
 
 const inquirer = require('inquirer');
-const async = require('async');
 const customer = require("./customer.js");
 const manager = require("./manager.js");
 
@@ -10,7 +9,7 @@ function exitProgram() {
 }
 
 // Main menu
-async function mainMenu() {
+function mainMenu() {
     const menuItems = {
         "customer": customer.customerMenu,
         "manager": manager.managerMenu,
