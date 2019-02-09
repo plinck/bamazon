@@ -51,6 +51,28 @@ class BAmazonModel {
         return promise;
     }
 
+    getProductsBelowQuantity(quantity) {
+        let database = new Database();
+
+        let promise = new Promise((resolve, reject) => {
+
+            database.query(`SELECT product_id, product_name, price, stock_quantity, product_sales
+            FROM products
+            WHERE stock_quantity < ${quantity}
+            ORDER BY stock_quantity;`)
+                .then(rows => {
+                    resolve(rows);
+                })
+                .catch(err => {
+                    reject(err);
+                });
+        });
+
+        database.close();
+        return promise;
+    }
+
+
     getProductByID(productID) {
         let database = new Database();
 
@@ -71,7 +93,7 @@ class BAmazonModel {
         return promise;
     }
 
-    reduceProductQuantity(productID, quantity) {
+    updateProductQuantity(productID, quantity) {
         let database = new Database();
 
         let promise = new Promise((resolve, reject) => {
