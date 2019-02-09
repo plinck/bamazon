@@ -149,3 +149,4 @@ Make sure you use the normal GitHub. Because this is a CLI App, there will be no
 
 - Create icon and add to portfolio
 - Move database connection to model ctor and destory and proper time
+- add some input validation

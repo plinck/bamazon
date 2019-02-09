@@ -125,6 +125,8 @@ async function customerMenu() {
     let product_id = parseInt(answer.product_id);
     let quantity = parseInt(answer.quantity);
 
+    // use completion handler to come back when done and see if needing to go again
+    // If the user wants to do it again, allow it
     buyProduct(product_id, quantity, () => {
         if (answer.more != undefined && answer.more == 'y') customerMenu();
     });
