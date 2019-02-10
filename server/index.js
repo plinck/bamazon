@@ -3,6 +3,7 @@
 const inquirer = require('inquirer');
 const customer = require("./customer.js");
 const manager = require("./manager.js");
+const supervisor = require("./supervisor.js");
 
 function exitProgram() {
     console.log("BYE!");
@@ -13,7 +14,7 @@ function mainMenu() {
     const menuItems = {
         "customer": customer.customerMenu,
         "manager": manager.managerMenu,
-        "supervisor": exitProgram,
+        "supervisor": supervisor.supervisorMenu,
         "QUIT": exitProgram
     };
 

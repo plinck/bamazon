@@ -12,11 +12,11 @@ function buyProduct(product_id, quantity, completedWorkCallback) {
     let newQuantity;
 
     bAmazonModel.getProductByID(product_id).then(rows => {
-        if (rows[0].stock_quantity >= quantity) {
+        if (rows[0].stock_quantity != undefined && rows[0].stock_quantity >= quantity) {
             totalSale = quantity * rows[0].price;
             newQuantity = rows[0].stock_quantity - quantity;
 
-            bAmazonModel.updateProductQuantity(product_id, newQuantity)
+            bAmazonModel.updateProductSale(product_id, newQuantity, totalSale)
                 .then(() => {
                     totalSale = totalSale.toFixed(2);
                     console.log(`You bought ${quantity} x ${rows[0].product_name} totalling: $${totalSale}`);

@@ -2,15 +2,15 @@
 
 ## Overview
 
-This is an Amazon-like storefront Command Line Interface app (CLI). The app takes in orders from customers and depletes stock from the store's inventory. It tracks product sales across the store's departments and then provides a summary of the highest-grossing departments in the store.
+This is an Amazon-like storefront Command Line Interface app (CLI). The app takes in orders from customers and depletes stock from the store's inventory. It tracks product sales across the store's departments and then provides a summary of the highest-grossing departments in the store.  As fields are enetered using `inquirir`, I use the validate method to ensure that the fields entered are appropriate and match (e.g. must be a valid department ID when adding a product).
 
 ## Instructions
 
 - You must clone the repo to your machine since it is a console application
-- Then npm install dependencies
-- Create the database using the SQL files --- `server/bamazon_db.sql` and seed data with `server/bamazon_data.sql`
-- Then run `node index` from the `server` directory - all sub menus are called from that for customer, manager and supervisor
+- npm install dependencies
 - Create a mySQL database connecton with user id `plinck` and password `password` that has access to DB
+- Create the database using the SQL files --- `server/bamazon_db.sql` and seed data with `server/bamazon_data.sql`
+- Run `node index` from the `server` directory - all sub menus are called from that for customer, manager and supervisor
 - If you want to use JAWS DB you will need a .env with my Heroku DB URL in it.  I will give it to you if you need it.
 
 ## Technologies Used
@@ -27,13 +27,13 @@ This is an Amazon-like storefront Command Line Interface app (CLI). The app take
 
 ### Notes
 
-- I used promises in a several ways to demonstrate the differences -- async/await, try/catch and standard (.then, .catch). In addition I used standard callbacks.  I wanted to show all the different ways these things could be done.
+- I used promises and callbacks in a several ways to demonstrate the differences -- async/await, try/catch and standard (.then, .catch). In addition I used standard callbacks.  I wanted to show all the different ways these things could be done.
 
 ### Main Menu
 
-Main menu just displays customer, manager or supervisor to choose your roles.  Alternatively, you can run `customer.js`, `manager.js` or `supervisor.js` directly using node on command prompt.
+Main menu just displays customer, manager or supervisor to choose your roles.  
 
-### Customer View (Pick `customer` from main menu or run `node customer` from command prompt)
+### Customer View (Pick `customer` from main menu)
 
 1. Create a MySQL Database called `bamazon`.
 
@@ -77,9 +77,9 @@ Main menu just displays customer, manager or supervisor to choose your roles.  A
 
 - - -
 
-### Manager View (Pick `manager` from main menu or run `node manager` from command prompt)
+### Manager View (Pick `manager` from main menu)
 
-* The logic is in `manager.js` but it is called from mainMenu is index.js (or you can run directly wihtout going through the menu). Running as manager allows:
+* The logic is in `manager.js` but it is called from mainMenu is index.js.
 
 * `View Products for Sale` lists every available item: the item IDs, names, prices, department and quantities.
 
@@ -91,7 +91,7 @@ Main menu just displays customer, manager or supervisor to choose your roles.  A
 
 - - -
 
-### Supervisor View (Pick `supervisor` from main menu or run `node supervisor` from command prompt)
+### Supervisor View (Pick `supervisor` from main menu)
 
 1. `departments` table.
   ```sql
@@ -105,7 +105,7 @@ Main menu just displays customer, manager or supervisor to choose your roles.  A
 
 2. When a customer purchases anything from the store, the price of the product multiplied by the quantity purchased is added to the product's product_sales column.
 
-3. The logic is in `supervisor.js` but is called from the mainMenu in index.js (or you can run directly without going through the mainMenu):
+3. The logic is in `supervisor.js` but is called from the mainMenu in index.js.
 
 4. `View Product Sales by Department` displays a summarized table in their terminal/bash window. Use the table below as a guide.
 
@@ -114,21 +114,12 @@ Main menu just displays customer, manager or supervisor to choose your roles.  A
 | 01            | Electronics     | 10000           | 20000         | 10000        |
 | 02            | Clothing        | 60000           | 100000        | 40000        |
 
-5. The `total_profit` column is calculated on the fly using the difference between `over_head_costs` and `product_sales`. `total_profit` is not be stored in any database. Use a custom alias.
+1. The `total_profit` column is calculated on the fly using the difference between `over_head_costs` and `product_sales`. `total_profit` is not stored in any database. I use a custom alias.
 
-6. If you can't get the table to display properly after a few hours, then feel free to go back and just add `total_profit` to the `departments` table.
-
-   * Hint: You may need to look into aliases in MySQL.
-
-   * Hint: You may need to look into GROUP BYs.
-
-   * Hint: You may need to look into JOINS.
-
-   * **HINT**: There may be an NPM package that can log the table to the console. What's is it? Good question :)
+   * **NOTE**: I wrote a custom `render` function that displays results from any query in a pretty format.  I didnt check for and NPM package since I forgot, but I didnt like the npm package output anyway so I made a better one.  It taught me some techniques that are gonna come in handy later
 
 ## To Do
 
-- Create icon and add to portfolio
 - Move database connection to model ctor and destory and proper time
 - add some input validation
-- let them go through additional menus multiple times (like viewing inventory)
+- Allow customer to buy additional products - i.e. restart menu after purchase goes through
