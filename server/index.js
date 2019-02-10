@@ -1,41 +1,33 @@
 "use strict";
 
 const inquirer = require('inquirer');
-const async = require('async');
-const BAmazonModel = require("./BAmazonModel.js");
-let render = require("./render.js");
-let customer = require("./customer.js");
-let manager = require("./manager.js");
+const customer = require("./customer.js");
+const manager = require("./manager.js");
+
+function exitProgram() {
+    console.log("BYE!");
+}
 
 // Main menu
-async function mainMenu() {
+function mainMenu() {
+    const menuItems = {
+        "customer": customer.customerMenu,
+        "manager": manager.managerMenu,
+        "supervisor": exitProgram,
+        "QUIT": exitProgram
+    };
+
     const question = {
         type: 'list',
         name: 'mainMenu',
         message: '\n\nWhat view do you want?',
-        choices: ["customer", "manager", "supervisor", "QUIT"]
+        choices: Object.keys(menuItems)
     };
 
-    let bAmazonModel = new BAmazonModel();
+    inquirer.prompt(question).then(answer => {
+        menuItems[answer.mainMenu]();
+    });
 
-    let answer = await inquirer.prompt(question);
-
-    switch (answer.mainMenu) {
-        case "customer":
-            console.log(answer.mainMenu);
-            customer.customerMenu();
-            break;
-        case "manager":
-            console.log(answer.mainMenu);
-            manager.managerMenu();
-            break;
-        case "supervisor":
-            console.log(answer.mainMenu);
-            break;
-        case "QUIT":
-            console.log(answer.mainMenu);
-            break;
-    }
 }
 
 //

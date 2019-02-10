@@ -26,14 +26,17 @@ async function getDepartments() {
 function addNewProduct(departments) {
     let promptInfo = [{
             name: 'product_name',
-            message: 'Product Name?'
+            message: 'Product Name?',
+            validate: value => (value !== "")
         },
         {
             name: 'stock_quantity',
-            message: 'How Many?'
+            message: 'How Many?',
+            validate: value => (value !== "" && !isNaN(value))
         }, {
             name: 'price',
-            message: 'Price?'
+            message: 'Price?',
+            validate: value => (value !== "" && !isNaN(value))
         }, {
             type: 'list',
             name: 'department_id',
@@ -42,40 +45,51 @@ function addNewProduct(departments) {
         },
         {
             name: 'more',
-            message: 'Add More (y=yes)?'
+            message: 'Add More Products (y=yes)?'
         }
     ];
 
     inquirer.prompt(promptInfo).then(answer => {
         let department_id = parseInt(answer.department_id);
+        let stock_quantity = Math.trunc(parseFloat(answer.stock_quantity));
+        let price = parseFloat(answer.price);
+        price = price.toFixed(2);
 
         let bAmazonModel = new BAmazonModel();
-        bAmazonModel.addProduct(department_id, answer.product_name, answer.price, answer.stock_quantity).then(() => {
-            console.log(`Added Stock to ${answer.product_name}`);
-            if (answer.more != undefined && answer.more == 'y') addNewProduct(departments);
-        }).catch(errc => {
+        bAmazonModel.addProduct(department_id, answer.product_name, price, stock_quantity).then(() => {
+            console.log(`Added Product ${answer.product_name}`);
+            if (answer.more != undefined && answer.more == 'y') {
+                addNewProduct(departments);
+            } else {
+                managerMenu();
+            }
+        }).catch(err => {
             console.log(`Error adding product: ${err}`);
-            if (answer.more != undefined && answer.more == 'y') addNewProduct(departments);
         });
     });
 }
 
-// Manager : add to inventory
-function updateInventory() {
+// Manager : adjust inventory
+function updateInventory(productIDs) {
     let bAmazonModel = new BAmazonModel();
 
     let promptInfo = [{
         name: 'product_id',
-        message: 'Product ID?'
+        message: 'Product ID?',
+        validate: value => (value !== "" && !isNaN(value) && productIDs.includes(parseFloat(value)))
     }, {
         name: 'newQuantity',
-        message: 'New TOTAL Product Quantity?'
+        message: 'New TOTAL Product Quantity?',
+        validate: value => (value !== "" && !isNaN(value))
     }];
 
     inquirer.prompt(promptInfo).then(answer => {
-        bAmazonModel.updateProductQuantity(answer.product_id, answer.newQuantity)
+        let newQuantity = Math.trunc(parseFloat(answer.newQuantity));
+
+        bAmazonModel.updateProductQuantity(answer.product_id, newQuantity)
             .then(() => {
-                console.log(`New Product Stock Quantity is ${answer.newQuantity}`);
+                console.log(`New Product Stock Quantity is ${newQuantity}`);
+                managerMenu();
             })
             .catch(err => {
                 console.log(`Error updating stock quantity ${err}.`);
@@ -93,7 +107,7 @@ async function managerMenu() {
         type: 'list',
         name: 'managerMenu',
         message: '\n\nWhat do you want to do?',
-        choices: ["View Products", "View Low Inventory", "Update Product Inventory", "Add New Product"]
+        choices: ["View Products", "View Low Inventory", "Update Product Inventory", "Add New Product", "QUIT"]
     };
 
     let answer = await inquirer.prompt(question);
@@ -102,20 +116,25 @@ async function managerMenu() {
         case "View Products":
             rows = await bAmazonModel.getProductsByDepartment();
             render(rows);
+            managerMenu();
             break;
         case "View Low Inventory":
             rows = await bAmazonModel.getProductsBelowQuantity(5);
             render(rows);
+            managerMenu();
             break;
         case "Update Product Inventory":
             rows = await bAmazonModel.getProductsByDepartment();
             render(rows);
-            updateInventory();
+            const productIDs = rows.map(r => r.product_id);
+            updateInventory(productIDs);
             break;
         case "Add New Product":
             // get the departments to maintain ref integrity when adding product
             departments = await getDepartments();
             addNewProduct(departments);
+            break;
+        case "QUIT":
             break;
         default:
             break;
