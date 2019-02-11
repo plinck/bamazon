@@ -2,6 +2,7 @@ let Database = require("./DatabasePromise");
 
 class BAmazonModel {
     constructor() {}
+    
     getProducts() {
         let database = new Database();
 
@@ -114,6 +115,7 @@ class BAmazonModel {
         return promise;
     }
 
+    // Update the stock quantity to account for things going bad or jjust general adjustments
     updateProductQuantity(productID, quantity) {
         let database = new Database();
 
@@ -134,6 +136,28 @@ class BAmazonModel {
         return promise;
     }
 
+    // This one ADDS to inventory vs just updating
+    addToProductQuantity(productID, quantity) {
+        let database = new Database();
+
+        let promise = new Promise((resolve, reject) => {
+
+            database.query(`UPDATE products
+            SET stock_quantity = (stock_quantity + ${quantity})
+            WHERE products.product_id = ${productID};`)
+                .then(rows => {
+                    resolve();
+                })
+                .catch(err => {
+                    reject(err);
+                });
+        });
+
+        database.close();
+        return promise;
+    }
+
+    // Updates product quantity and adds to total amount sold
     updateProductSale(productID, quantity, saleAmount) {
         let database = new Database();
 
@@ -156,7 +180,7 @@ class BAmazonModel {
         return promise;
     }
 
-
+    // Add a new product
     addProduct(department_id, product_name, price, stock_quantity) {
         let database = new Database();
 
