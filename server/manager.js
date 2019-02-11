@@ -97,17 +97,46 @@ function updateInventory(productIDs) {
     });
 }
 
+// Manager : ADD to inventory
+function addToInventory(productIDs) {
+    let bAmazonModel = new BAmazonModel();
+
+    let promptInfo = [{
+        name: 'product_id',
+        message: 'Product ID?',
+        validate: value => (value !== "" && !isNaN(value) && productIDs.includes(parseFloat(value)))
+    }, {
+        name: 'addedQuantity',
+        message: 'Stock Quantity to Add?',
+        validate: value => (value !== "" && !isNaN(value))
+    }];
+
+    inquirer.prompt(promptInfo).then(answer => {
+        let addedQuantity = Math.trunc(parseFloat(answer.addedQuantity));
+
+        bAmazonModel.addToProductQuantity(answer.product_id, addedQuantity)
+            .then(() => {
+                console.log(`Add ${addedQuantity} to Product Stock`);
+                managerMenu();
+            })
+            .catch(err => {
+                console.log(`Error adding stock quantity ${err}.`);
+            });
+    });
+}
+
 // Manager menu
 async function managerMenu() {
     let bAmazonModel = new BAmazonModel();
     let rows;
     let departments;
+    let productIDs;
 
     const question = {
         type: 'list',
         name: 'managerMenu',
         message: '\n\nWhat do you want to do?',
-        choices: ["View Products", "View Low Inventory", "Update Product Inventory", "Add New Product", "QUIT"]
+        choices: ["View Products", "View Low Inventory", "Update Product Inventory", "Add to Product Inventory", "Add New Product", "QUIT"]
     };
 
     let answer = await inquirer.prompt(question);
@@ -126,8 +155,14 @@ async function managerMenu() {
         case "Update Product Inventory":
             rows = await bAmazonModel.getProductsByDepartment();
             render(rows);
-            const productIDs = rows.map(r => r.product_id);
+            productIDs = rows.map(r => r.product_id);
             updateInventory(productIDs);
+            break;
+        case "Add to Product Inventory":
+            rows = await bAmazonModel.getProductsByDepartment();
+            render(rows);
+            productIDs = rows.map(r => r.product_id);
+            addToInventory(productIDs);
             break;
         case "Add New Product":
             // get the departments to maintain ref integrity when adding product
