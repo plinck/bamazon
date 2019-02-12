@@ -7,10 +7,11 @@ const render = require("./render.js");
 // Get total sales and profit for each department
 function departmentSales() {
     let bAmazonModel = new BAmazonModel();
-
+    render.clearScreen();
+    
     bAmazonModel.getDepartmentTotals()
     .then((rows) => {
-        render(rows);
+        render.render(rows);
         supervisorMenu();
     })
     .catch(err => {

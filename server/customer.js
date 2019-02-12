@@ -11,7 +11,8 @@ function buyProduct(product_id, quantity, completedWorkCallback) {
     let totalSale;
     let newQuantity;
 
-    bAmazonModel.getProductByID(product_id).then(rows => {
+    bAmazonModel.getProductByID(product_id)
+    .then(rows => {
         if (rows[0].stock_quantity != undefined && rows[0].stock_quantity >= quantity) {
             totalSale = quantity * rows[0].price;
             newQuantity = rows[0].stock_quantity - quantity;
@@ -27,11 +28,11 @@ function buyProduct(product_id, quantity, completedWorkCallback) {
                     console.log(`Error updating stock quantity ${err}.  Sale Rejected`);
                 });
         } else {
-            console.log(`Stock is ${rows[0].stock_quantity} of ${rows[0].product_name}.  Cant sell you: ${quantity}`);
+            render.renderError(`Stock is ${rows[0].stock_quantity} of ${rows[0].product_name}.  Can't sell you: ${quantity}`);
             completedWorkCallback();
         }
     }).catch(err => {
-        console.log(`Error finding product with id: ${product_id}`);
+        render.renderError(`Error finding product ${err}`);
     });
 }
 
@@ -41,7 +42,7 @@ async function customerMenu() {
 
     // use await since you cant ask them the question without showing them choices
     let rows = await bAmazonModel.getProductsByDepartment();
-    render(rows);
+    render.render(rows);
     const productIDs = rows.map(r => r.product_id);
 
     const question = [{

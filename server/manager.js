@@ -8,10 +8,11 @@ const render = require("./render.js")
 // Manager : View Departments
 async function getDepartments() {
     let bAmazonModel = new BAmazonModel();
+    render.clearScreen();
 
     try {
         let rows = await bAmazonModel.getDepartments();
-        render(rows);
+        render.render(rows);
         let departmentIDarray = [];
         for (let i in rows) {
             departmentIDarray.push(`${rows[i].department_id}`);
@@ -143,28 +144,33 @@ async function managerMenu() {
 
     switch (answer.managerMenu) {
         case "View Products":
+            render.clearScreen();
             rows = await bAmazonModel.getProductsByDepartment();
-            render(rows);
+            render.render(rows);
             managerMenu();
             break;
         case "View Low Inventory":
+            render.clearScreen();
             rows = await bAmazonModel.getProductsBelowQuantity(5);
-            render(rows);
+            render.render(rows);
             managerMenu();
             break;
         case "Update Product Inventory":
+            render.clearScreen();
             rows = await bAmazonModel.getProductsByDepartment();
-            render(rows);
+            render.render(rows);
             productIDs = rows.map(r => r.product_id);
             updateInventory(productIDs);
             break;
         case "Add to Product Inventory":
+            render.clearScreen();
             rows = await bAmazonModel.getProductsByDepartment();
-            render(rows);
+            render.render(rows);
             productIDs = rows.map(r => r.product_id);
             addToInventory(productIDs);
             break;
         case "Add New Product":
+            render.clearScreen();
             // get the departments to maintain ref integrity when adding product
             departments = await getDepartments();
             addNewProduct(departments);

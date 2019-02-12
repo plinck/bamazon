@@ -1,3 +1,5 @@
+const colors   = require("colors");
+
 // Render data/rows to the console in a pretty fashion
 // Made in generic so any set of rows can be neatly displayed.
 // Pretty nice since I can use this one fucntion for ALL display data coming from ANY table
@@ -26,13 +28,13 @@ function render(rows) {
         headerText += " " + key + " ".repeat(columnWidths[key] - key.length) + " |";
     }
     console.log();
-    console.log(headerText.toUpperCase());
+    console.log(headerText.toUpperCase().yellow.bold);
 
     headerText = "|";
     for (let key in columnWidths) {
         headerText += " " + "-".repeat(key.length) + "-".repeat(columnWidths[key] - key.length) + " |";
     }
-    console.log(headerText.toUpperCase());
+    console.log(headerText.toUpperCase().yellow.bold);
 
     // Now, print the data
     rows.forEach(row => {
@@ -46,4 +48,12 @@ function render(rows) {
     });
 }
 
-module.exports = render;
+function clearScreen() {
+    process.stdout.write("\033c");
+}
+
+function renderError(error) {
+    console.log(error.red.bold);
+}
+
+module.exports = {render, clearScreen, renderError};
