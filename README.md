@@ -1,4 +1,5 @@
 # bamazon Node.js & MySQL
+![Logo](server/images/bamazon275x200.png)
 
 ## Overview
 
@@ -28,7 +29,17 @@ As fields are enetered using `inquirer`, I use the validate method to ensure tha
 - [x] Node.js, inquirer, async, dotenv, mysql
 
 ## Screenshots
-![Logo](server/images/bamazon275x200.png)
+![Animate1](images/animate1.gif)
+![Animate2](images/animate2.gif)
+![ss1](images/ss1.png)
+![ss2](images/ss2.png)
+![ss3](images/ss3.png)
+![ss4](images/ss4.png)
+![ss5](images/ss5.png)
+![ss6](images/ss6.png)
+![ss7](images/ss7.png)
+![ss10](images/ss10.png)
+![ss11](images/ss11.png)
 
 ## Design
 ![ERD/EER](server/images/ERD.png)
