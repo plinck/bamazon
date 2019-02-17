@@ -127,5 +127,3 @@ Main menu just displays customer, manager or supervisor to choose your roles.
    * **NOTE**: I wrote a custom `render` function that displays results from any query in a pretty format.  I didnt check for and NPM package since I forgot, but I didnt like the npm package output anyway so I made a better one.  It taught me some techniques that are gonna come in handy later
 
 ## To Do
-
-- add images and animanted GIFs to the readme.
